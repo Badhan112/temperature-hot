@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Temperature Hot</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background: url(images/bg-image.jpg) no-repeat;
+            background-size: cover;
+            height: 100vh;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <form class="col-md-6 m-auto py-5">
+            <div class="input-group mb-3">
+                <input id="city-name" type="text" class="form-control" placeholder="Enter a location for Weather ...">
+                <div class="input-group-append">
+                    <button id="search-city-btn" type="button" class="btn btn-danger">Search</button>
+                </div>
+            </div>
+        </form>
+        <div class="weather-status text-white text-center">
+            <img id="icon" alt="">
+            <h1 id="city"></h1>
+            <h3><span id="temp"></span>&deg;C</h3>
+            <h1 id="sky-condition" class="lead"></h1>
+        </div>
+    </div>
+
+    <script>
+        function setWeatherInfo(data){
+            const weatherData = data.list[0];
+            document.getElementById("city").innerText = weatherData.name;
+            document.getElementById("temp").innerText = weatherData.main.feels_like;
+            document.getElementById("sky-condition").innerText = weatherData.weather[0].description;
+            const iconSrc = `http://openweathermap.org/img/wn/${weatherData.weather[0].icon}.png`;
+            document.getElementById("icon").setAttribute("src", iconSrc);
+        }
+
+
+        function getWeatherTemperature(cityName){
+            const api = `https://api.openweathermap.org/data/2.5/find?q=${cityName}&units=metric&appid=b64a25b4f18cef27a91e53b857bd84fb`;
+            fetch(api)
+            .then(response => response.json())
+            .then(data => setWeatherInfo(data))
+            .catch(error => alert("Can't Find"));
+        }
+
+        getWeatherTemperature("Dhaka");
+
+        document.getElementById("search-city-btn").addEventListener("click", function(){
+            const cityName = document.getElementById("city-name").value;
+            let formatedCityName = cityName[0].toUpperCase();
+
+            //to convert Upper Camel Case
+            for(let i = 1; i < cityName.length; i++){
+                formatedCityName += cityName[i].toLowerCase();
+            }
+            
+            getWeatherTemperature(formatedCityName);
+        });
+    </script>
+</body>
+
+</html>
